@@ -3,7 +3,7 @@ from flask_cors import CORS
 import requests
 
 app = Flask(__name__)
-# This is the "Magic Line" that fixes the Bridge Retrying error
+# This line is the "Key" to fixing the Bridge error
 CORS(app, resources={r"/*": {"origins": "*"}})
 
 @app.route('/')
