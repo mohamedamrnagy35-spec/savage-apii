@@ -3,22 +3,28 @@ from flask_cors import CORS
 import requests
 
 app = Flask(__name__)
-# This line allows the HTML tool to talk to the Vercel server
-CORS(app, resources={r"/*": {"origins": "*"}}) 
+# This specific configuration is required to stop "Bridge Retrying"
+CORS(app, resources={r"/api/*": {"origins": "*"}})
+
+@app.route('/')
+def home():
+    return "SAVAGE SERVER ONLINE"
 
 @app.route('/api/check', methods=['POST', 'OPTIONS'])
 def check():
     if request.method == 'OPTIONS':
-        return '', 200
-    name = request.json.get("username")
-    # This is the official Roblox validation endpoint
+        return jsonify({"status": "ok"}), 200
+        
+    data = request.get_json()
+    name = data.get("username")
+    
     url = f"https://auth.roblox.com/v1/usernames/validate?username={name}&birthday=2004-10-10"
+    
     try:
         r = requests.get(url, timeout=5)
         return jsonify(r.json())
-    except:
-        return jsonify({"error": "Roblox API Timeout"}), 500
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
-# Required for Vercel to recognize the app
 def handler(request):
     return app(request)
