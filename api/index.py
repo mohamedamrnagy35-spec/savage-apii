@@ -3,14 +3,13 @@ from flask_cors import CORS
 import requests
 
 app = Flask(__name__)
-CORS(app) # This fixes the connection errors you saw earlier
+# This line allows the HTML tool to talk to the Vercel server
+CORS(app, resources={r"/*": {"origins": "*"}}) 
 
-@app.route('/')
-def home():
-    return "Savage Engine is Online!"
-
-@app.route('/api/check', methods=['POST'])
+@app.route('/api/check', methods=['POST', 'OPTIONS'])
 def check():
+    if request.method == 'OPTIONS':
+        return '', 200
     name = request.json.get("username")
     # This is the official Roblox validation endpoint
     url = f"https://auth.roblox.com/v1/usernames/validate?username={name}&birthday=2004-10-10"
