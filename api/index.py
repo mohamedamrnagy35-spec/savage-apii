@@ -5,6 +5,10 @@ import requests
 app = Flask(__name__)
 CORS(app)
 
+@app.route('/')
+def home():
+    return "Savage API is Online!"
+
 @app.route('/api/check', methods=['POST'])
 def check():
     name = request.json.get("username")
@@ -14,6 +18,3 @@ def check():
         return jsonify(r.json())
     except:
         return jsonify({"error": "Timeout"}), 500
-
-def handler(request):
-    return app(request)
